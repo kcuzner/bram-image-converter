@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace ImageConverter
 {
@@ -7,9 +8,23 @@ namespace ImageConverter
     {
         public static void Main(string[] args)
         {
+			if (args.Length < 1)
+			{
+				Console.WriteLine("ERROR: No output filename specified");
+				return;
+			}
+
+			if (args.Length < 2)
+			{
+				Console.WriteLine("ERROR: At least one input file must be specified");
+				return;
+			}
+
 			using(ImageCollection collection = new ImageCollection())
 			{
-				foreach(var fn in args)
+				string outputFilename = args[0];
+
+				foreach(var fn in args.Skip(1))
 				{
 					collection.Add(new Bitmap(fn));
 				}
@@ -18,8 +33,10 @@ namespace ImageConverter
 				{
 					VHDLConverter c = new VHDLConverter(b);
 
-					c.Save("Test.vhd");
+					c.Save(outputFilename);
 				}
+
+				Console.WriteLine("Output written to {0}", outputFilename);
 			}
         }
     }

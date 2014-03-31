@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace ImageConverter
 {
-	public class ImageCollection : ICollection<Bitmap>, IDisposable
+	public class ImageCollection : ICollection<Image>, IDisposable
     {
-		private IList<Bitmap> _bitmaps;
+		private IList<Image> _images;
 
         public ImageCollection()
         {
-			this._bitmaps = new List<Bitmap>();
+			this._images = new List<Image>();
         }
 
 		/// <summary>
@@ -20,21 +20,24 @@ namespace ImageConverter
 		/// </summary>
 		public Bitmap Render()
 		{
-			int width = this._bitmaps.Max(b => b.Width);
-			int height = this._bitmaps.Sum(b => b.Height);
+			if (this._images.Count == 0)
+				throw new InvalidOperationException("At least one image must be loaded");
+
+			int width = this._images.Max(b => b.Width);
+			int height = this._images.Sum(b => b.Height);
 
 			Bitmap bitmap = new Bitmap(width, height);
 
 			using(Graphics g = Graphics.FromImage(bitmap))
 			{
 				int cy = 0; //current y position
-				for(int i = 0; i < this._bitmaps.Count; i++)
+				for(int i = 0; i < this._images.Count; i++)
 				{
-					Bitmap b = this._bitmaps[i];
+					Image img = this._images[i];
 					Point p = new Point(0, cy);
-					g.DrawImage(b, p);
+					g.DrawImage(img, p);
 
-					cy += b.Height;
+					cy += img.Height;
 				}
 			}
 
@@ -43,36 +46,36 @@ namespace ImageConverter
 
 		#region ICollection implementation
 
-		public void Add(Bitmap item)
+		public void Add(Image item)
 		{
-			this._bitmaps.Add(item);
+			this._images.Add(item);
 		}
 
 		public void Clear()
 		{
-			this._bitmaps.Clear();
+			this._images.Clear();
 		}
 
-		public bool Contains(Bitmap item)
+		public bool Contains(Image item)
 		{
-			return this._bitmaps.Contains(item);
+			return this._images.Contains(item);
 		}
 
-		public void CopyTo(Bitmap[] array, int arrayIndex)
+		public void CopyTo(Image[] array, int arrayIndex)
 		{
-			this._bitmaps.CopyTo(array, arrayIndex);
+			this._images.CopyTo(array, arrayIndex);
 		}
 
-		public bool Remove(Bitmap item)
+		public bool Remove(Image item)
 		{
-			return this._bitmaps.Remove(item);
+			return this._images.Remove(item);
 		}
 
 		public int Count
 		{
 			get
 			{
-				return this._bitmaps.Count;
+				return this._images.Count;
 			}
 		}
 
@@ -80,7 +83,7 @@ namespace ImageConverter
 		{
 			get
 			{
-				return this._bitmaps.IsReadOnly;
+				return this._images.IsReadOnly;
 			}
 		}
 
@@ -88,9 +91,9 @@ namespace ImageConverter
 
 		#region IEnumerable implementation
 
-		public IEnumerator<Bitmap> GetEnumerator()
+		public IEnumerator<Image> GetEnumerator()
 		{
-			return this._bitmaps.GetEnumerator();
+			return this._images.GetEnumerator();
 		}
 
 		#endregion
@@ -99,7 +102,7 @@ namespace ImageConverter
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return this._bitmaps.GetEnumerator();
+			return this._images.GetEnumerator();
 		}
 
 		#endregion
@@ -108,8 +111,8 @@ namespace ImageConverter
 
 		public void Dispose()
 		{
-			foreach (var b in this._bitmaps)
-				b.Dispose();
+			foreach (var i in this._images)
+				i.Dispose();
 		}
 
 		#endregion
