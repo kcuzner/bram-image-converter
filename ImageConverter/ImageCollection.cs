@@ -18,7 +18,7 @@ namespace ImageConverter
 		/// <summary>
 		/// Creates a new image from this collection
 		/// </summary>
-		public Image Render()
+		public Bitmap Render()
 		{
 			int width = this._bitmaps.Max(b => b.Width);
 			int height = this._bitmaps.Sum(b => b.Height);

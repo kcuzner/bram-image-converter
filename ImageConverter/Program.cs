@@ -14,9 +14,11 @@ namespace ImageConverter
 					collection.Add(new Bitmap(fn));
 				}
 
-				using(Image i = collection.Render())
+				using(Bitmap b = collection.Render())
 				{
+					VHDLConverter c = new VHDLConverter(b);
 
+					c.Save("Test.vhd");
 				}
 			}
         }
